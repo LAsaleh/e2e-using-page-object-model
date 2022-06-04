@@ -25,7 +25,7 @@ public class HomePage {
     private WebElement signOutLink;
 
     public void clickSignInLink() {
-        Assert.assertEquals(driver.getTitle().equals("My Store"), "title is not correct");
+        Assert.assertTrue(driver.getTitle().equals("My Store"), "title is not correct");
         Assert.assertTrue(signInLIke.isDisplayed(), "Sign in link was not displayed");
         signInLIke.click();
         System.out.println("Clicking sign in link");

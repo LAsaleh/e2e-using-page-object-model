@@ -40,7 +40,7 @@ public class UserAccountPage {
     private WebElement homeBtn;
 
     private String[] accountOptionsExpected = {"order history and details", "my credit slips",
-            "my addresses", "my personal information", "my with list"};
+            "my addresses", "my personal information", "my wishlists"};
 
 
     public void signOut(){

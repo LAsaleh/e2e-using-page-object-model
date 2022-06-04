@@ -1,5 +1,7 @@
 package com.academy.techcenture;
 
+import com.academy.techcenture.config.ConfigReader;
+import com.academy.techcenture.config.Driver;
 import com.academy.techcenture.pages.HomePage;
 import com.academy.techcenture.pages.LoginPage;
 import com.academy.techcenture.pages.UserAccountPage;
@@ -13,7 +15,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-//ths class will contain all test methos that checks the login functionality.
+//ths class will contain all test methods that checks the login functionality.
 
 public class UserLoginTest {
 
@@ -22,20 +24,13 @@ public class UserLoginTest {
 
     @BeforeMethod
     public void setUp(){
-        WebDriverManager.chromedriver().setup();
-        this.driver = new ChromeDriver();
-        this.driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(15));
-        this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 
-        driver.get("http://automationpractice.com/index.php");
+        driver = Driver.getDriver();
+        driver.get(ConfigReader.getProperty("URL"));
     }
-
-
-
 
     @Test
     public void userLoginPositive() {
-
 
 
         HomePage homPage = new HomePage(driver);
@@ -48,6 +43,7 @@ public class UserLoginTest {
         userAccountPage.verifyAccountOptions();
         userAccountPage.navigateHome();
         homPage.signOut();
+        homPage.clickSignInLink();
         loginPage.verifyLoginErrors();
 
 
