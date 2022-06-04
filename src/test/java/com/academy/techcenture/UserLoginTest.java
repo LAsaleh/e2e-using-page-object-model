@@ -5,6 +5,7 @@ import com.academy.techcenture.config.Driver;
 import com.academy.techcenture.pages.HomePage;
 import com.academy.techcenture.pages.LoginPage;
 import com.academy.techcenture.pages.UserAccountPage;
+import com.academy.techcenture.pages.UserRegistrationPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -44,7 +45,7 @@ public class UserLoginTest {
         userAccountPage.navigateHome();
         homPage.signOut();
         homPage.clickSignInLink();
-        loginPage.verifyLoginErrors();
+
 
 
     }

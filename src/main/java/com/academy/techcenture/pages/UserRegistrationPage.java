@@ -6,12 +6,14 @@ import org.checkerframework.checker.units.qual.A;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import javax.swing.*;
 import java.time.Duration;
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class UserRegistrationPage {
     @FindBy(id = "email")
     private WebElement inputEmailPersonal;
 
-    @FindBy(xpath =  "//label[@for='passwd']")
+    @FindBy(xpath = "//label[@for='passwd']")
     private WebElement passwdLabelPersonal;
 
     @FindBy(id = "passwd")
@@ -173,13 +175,28 @@ public class UserRegistrationPage {
     @FindBy(id = "submitAccount")
     private WebElement registerAddressBtn;
 
+    @FindBy(xpath = "//div[contains(@class,'alert-danger')]")
+    private WebElement alertLabel;
+
+    @FindBy(xpath = "//div[contains(@class,'alert-danger')]/p")
+    private WebElement alertTxt;
+
+    @FindBy(xpath = "//div[contains(@class,'alert-danger')]//li")
+    private List<WebElement> alertMsgLists;
 
 
+    private String[] alertExpectedList = {
+            "You must register at least one phone number.",
+            "lastname is required.",
+            "firstname is required.",
+            "passwd is required.",
+            "address1 is required.",
+            "city is required.",
+            "The Zip/Postal code you've entered is invalid. It must follow this format: 00000",
+            "This country requires you to choose a State."};
 
 
-
-
-    public void registerUser(){
+    public void registerUser() {
         fillOutPersonalDetailsSection();
         fillOutAddressSection();
 
@@ -191,7 +208,7 @@ public class UserRegistrationPage {
         Assert.assertTrue(createAnAccountHeader.isDisplayed());
         Assert.assertEquals(yourPersonalInfoLabel.getText(), "YOUR PERSONAL INFORMATION");
 
-        genderPersonalInput.get(commonUtils.randomNumber(1,2)-1).click(); //2
+        genderPersonalInput.get(commonUtils.randomNumber(1, 2) - 1).click(); //2
 
         Assert.assertTrue(firstNamePersonalLabel.isDisplayed());
         Assert.assertTrue(inputFirstNamePersonal.isDisplayed());
@@ -218,7 +235,7 @@ public class UserRegistrationPage {
         Assert.assertTrue(dateOfBirthPersonalLabel.isDisplayed());
         String dob = commonUtils.randomDOBAbove18();
         String[] splitDob = dob.split("-");
-        int dobYear =  Integer.parseInt(splitDob[0]);
+        int dobYear = Integer.parseInt(splitDob[0]);
         int dobMonth = Integer.parseInt(splitDob[1]);
         int dobDay = Integer.parseInt(splitDob[2]);
 
@@ -232,21 +249,20 @@ public class UserRegistrationPage {
         select.selectByValue(String.valueOf(dobDay));
 
 
-        if (!inputNewsLettersPersonal.isSelected()){
+        if (!inputNewsLettersPersonal.isSelected()) {
             inputNewsLettersPersonal.click();
         }
-        if (!specialOffersInputPersonal.isSelected()){
+        if (!specialOffersInputPersonal.isSelected()) {
             specialOffersInputPersonal.click();
         }
 
     }
 
 
-
-    private void fillOutAddressSection(){
+    private void fillOutAddressSection() {
         //TODO fill Out address section input
 
-        Assert.assertEquals(yourAddress.getText(),"YOUR ADDRESS");
+        Assert.assertEquals(yourAddress.getText(), "YOUR ADDRESS");
         Assert.assertTrue(fistNameAddressLabel.isDisplayed());
         inputFirstNameAddress.getAttribute("value");
 
@@ -277,7 +293,7 @@ public class UserRegistrationPage {
         Assert.assertTrue(countryLabelAddress.isDisplayed());
         select = new Select(inputCountryAddress);
         String text = select.getFirstSelectedOption().getText();
-        Assert.assertEquals(text , "United States");
+        Assert.assertEquals(text, "United States");
 
         Assert.assertTrue(additionalInfoAddressLabel.isDisplayed());
         inputAdditionalInfoAddress.sendKeys(commonUtils.generateRandomString(70));
@@ -295,13 +311,28 @@ public class UserRegistrationPage {
         System.out.println("password" + inputPasswdPersonal.getAttribute("value"));
 
 
+    }
 
 
+    public void verifyErrorsOnUserRegisterPage() {
+
+        Actions actions = new Actions(driver);
+        actions.moveToElement(registerAddressBtn).build().perform();
+        registerAddressBtn.click();
+
+        Assert.assertTrue(alertLabel.isDisplayed());
+        Assert.assertEquals(alertTxt.getText().trim(), "There are 8 errors");
+
+
+        for (int i = 0; i < alertMsgLists.size(); i++) {
+            Assert.assertEquals(alertMsgLists.get(i).getText().trim(), alertExpectedList[i]);
+
+        }
 
 
     }
 
-
-
-
 }
+
+
+

@@ -7,18 +7,23 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.io.IOException;
+import java.time.Duration;
 
 public class LoginPage {
    private WebDriver driver ;
     private CommonUtils commonUtils;
+    private WebDriverWait wait;
 
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
         this.commonUtils = new CommonUtils();
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
         PageFactory.initElements(driver, this);
 
@@ -65,19 +70,25 @@ public class LoginPage {
     @FindBy(xpath = "//div[contains(@class,'alert alert-danger')]//li")
     private WebElement authFailedError;
 
+    @FindBy(id = "create_account_error")
+    private WebElement alertMsg;
+
+
+    private String[] invalidEmailAddress = {"kevin.lee@gmail", "kevin.leegmail", "kevin.lee@", "123456", "gmail.com"};
+
 
 
 
     public void login(){
-        Assert.assertTrue(loginHeaderTxt.isDisplayed(),"Login Header text was not displayed");
-        Assert.assertTrue(emailLabel.isDisplayed(), " Email label was not displayed");
-        Assert.assertTrue(passwdLabel.isDisplayed(), " Password label was not displayed");
+        Assert.assertTrue(loginHeaderTxt.isDisplayed());
+        Assert.assertTrue(emailLabel.isDisplayed());
+        Assert.assertTrue(passwdLabel.isDisplayed());
         emailInput.clear();
         emailInput.sendKeys(ConfigReader.getProperty("username"));
         passwdInput.clear();
         passwdInput.sendKeys(ConfigReader.getProperty("password"));
-        Assert.assertTrue(forgetPasswdLink.isDisplayed(),"Forget passwd is not displayed");
-        Assert.assertTrue(submitBTN.isEnabled(), "Submit button was not enabled");
+        Assert.assertTrue(forgetPasswdLink.isDisplayed());
+        Assert.assertTrue(submitBTN.isEnabled());
         Assert.assertEquals("sign in", submitBTN.getText().toLowerCase().trim());
         submitBTN.click();
 
@@ -86,7 +97,6 @@ public class LoginPage {
 
 
     }
-
 
     public void verifyLoginErrors(){
 
@@ -143,9 +153,26 @@ public class LoginPage {
         submitCreateAccountBtn.click();
 
 
-
-
     }
+
+    public void verifyInvalidEmailAddress() throws InterruptedException {
+        for (int i = 0; i < invalidEmailAddress.length; i++) {
+            createEmailInput.sendKeys(invalidEmailAddress[i]);
+
+            Assert.assertTrue(submitCreateAccountBtn.isEnabled());
+            submitCreateAccountBtn.click();
+            wait.until(ExpectedConditions.visibilityOf(alertMsg));
+
+            Assert.assertEquals(alertMsg.getText().trim(), "Invalid email address.");
+            Thread.sleep(1000);
+            createEmailInput.clear();
+
+
+
+        }
+    }
+
+
 
 
 
