@@ -6,6 +6,7 @@ import com.academy.techcenture.pages.HomePage;
 import com.academy.techcenture.pages.LoginPage;
 import com.academy.techcenture.pages.UserManagingAccountPage;
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -30,5 +31,13 @@ public class UserManagingAccountTest {
         userManagingAccountPage.manageAccountVerifying();
 
 
+    }
+
+
+    @AfterMethod
+    public void cleanUp(){
+        if(driver != null){
+            driver.quit();
+        }
     }
 }
